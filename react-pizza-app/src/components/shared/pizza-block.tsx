@@ -1,12 +1,20 @@
-export const PizzaBlock = () => {
+import * as React from "react";
+
+interface Props {
+    title: string;
+    price: number;
+    imageUrl: string;
+}
+
+export const PizzaBlock: React.FC<Props> = ({title, price, imageUrl}) => {
   return (
     <div className="pizza-block">
       <img
         className="pizza-block__image"
-        src="https://media.dodostatic.net/image/r:584x584/019591b642d87304a62d322945990861.avif"
+        src={imageUrl}
         alt="Pizza"
       />
-      <h4 className="pizza-block__title">Чизбургер-пицца</h4>
+      <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
           <li className="active">тонкое</li>
@@ -19,7 +27,7 @@ export const PizzaBlock = () => {
         </ul>
       </div>
       <div className="pizza-block__bottom">
-        <div className="pizza-block__price">от 395 ₽</div>
+        <div className="pizza-block__price">от {price} ₽</div>
         <div className="button button--outline button--add">
           <svg
             width="12"
