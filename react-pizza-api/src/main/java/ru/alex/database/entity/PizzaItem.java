@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "pizza_item")
 @Data
@@ -33,4 +35,6 @@ public class PizzaItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pizza_size_id", referencedColumnName = "id")
     private PizzaSize size;
+
+    private BigDecimal price;
 }
