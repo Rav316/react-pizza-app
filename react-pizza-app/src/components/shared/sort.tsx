@@ -1,4 +1,16 @@
+import { useState } from "react";
+
 export const Sort = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(0);
+
+  const sortCategories = ["популярности", "цене", "алфавиту"];
+
+  const onCategoryClick = (index: number) => {
+    setActiveCategory(index);
+    setIsVisible(false);
+  };
+
   return (
     <div className="sort">
       <div className="sort__label">
@@ -15,15 +27,25 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span>популярности</span>
+        <span onClick={() => setIsVisible((prev) => !prev)}>
+          {sortCategories[activeCategory]}
+        </span>
       </div>
-      <div className="sort__popup">
-        <ul>
-          <li className="active">популярности</li>
-          <li>цене</li>
-          <li>алфавиту</li>
-        </ul>
-      </div>
+      {isVisible && (
+        <div className="sort__popup">
+          <ul>
+            {sortCategories.map((category, i) => (
+              <li
+                className={activeCategory === i ? "active" : ""}
+                onClick={() => onCategoryClick(i)}
+                key={i}
+              >
+                {category}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
-}
+};
