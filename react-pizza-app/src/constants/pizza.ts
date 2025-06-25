@@ -1,6 +1,14 @@
-export const mapPizzaType = {
-  0: 'традиционное',
-  1: 'тонкое'
-} as const;
+export interface PizzaSize {
+  id: number;
+  value: number;
+}
 
-export type PizzaType = keyof typeof mapPizzaType;
+export interface PizzaCategory {
+  id: number;
+  title: string;
+}
+
+export interface PizzaType {
+  id: number;
+  title: string;
+}

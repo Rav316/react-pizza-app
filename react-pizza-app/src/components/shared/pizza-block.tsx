@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
 import type { Pizza } from "../../App.tsx";
-import { mapPizzaType } from "../../constants/pizza.ts";
 
 interface Props {
   pizza: Pizza;
@@ -10,9 +9,9 @@ interface Props {
 export const PizzaBlock: React.FC<Props> = ({
   pizza: { title, types, sizes, price, imageUrl },
 }) => {
-  const [count, setCount] = useState(0);
-  const [activeType, setActiveType] = useState(0);
-  const [activeSize, setActiveSize] = useState(0);
+  const [count, setCount] = useState(1);
+  const [activeType, setActiveType] = useState(1);
+  const [activeSize, setActiveSize] = useState(1);
 
   return (
     <div className="pizza-block">
@@ -20,24 +19,24 @@ export const PizzaBlock: React.FC<Props> = ({
       <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
-          {types.map((type, i) => (
+          {types.map((type) => (
             <li
-              key={i}
-              onClick={() => setActiveType(i)}
-              className={i === activeType ? "active" : ""}
+              key={type.id}
+              onClick={() => setActiveType(type.id)}
+              className={type.id === activeType ? "active" : ""}
             >
-              {mapPizzaType[type]}
+              {type.title}
             </li>
           ))}
         </ul>
         <ul>
-          {sizes.map((size, i) => (
+          {sizes.map((size) => (
             <li
-              key={i}
-              onClick={() => setActiveSize(i)}
-              className={i === activeSize ? "active" : ""}
+              key={size.id}
+              onClick={() => setActiveSize(size.id)}
+              className={size.id === activeSize ? "active" : ""}
             >
-              {size} см.
+              {size.value} см.
             </li>
           ))}
         </ul>
