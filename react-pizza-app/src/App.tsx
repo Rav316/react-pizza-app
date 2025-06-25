@@ -1,8 +1,11 @@
 import "./scss/app.scss";
-import { Categories, Header, Sort } from "./components/shared";
-import { PizzaBlock } from "./components/shared/pizza-block.tsx";
+import "react-loading-skeleton/dist/skeleton.css";
 import type { PizzaCategory, PizzaSize, PizzaType } from "./constants/pizza.ts";
-import { useEffect, useState } from "react";
+import { NotFound } from "./pages/not-found.tsx";
+import { Route, Routes } from "react-router";
+import { Cart } from "./pages/cart.tsx";
+import { Layout } from "./components/shared/layout.tsx";
+import { Home } from "./pages/home.tsx";
 
 export interface Pizza {
   id: number;
@@ -16,39 +19,19 @@ export interface Pizza {
 }
 
 const App = () => {
-  const [items, setItems] = useState<Pizza[]>([]);
-
-  useEffect(() => {
-    fetch('http://localhost:8080/api/pizza')
-      .then(res => res.json())
-      .then((data: Pizza[]) => {
-        console.log(data)
-        setItems(data)
-      })
-  }, [])
-
-  console.log('rendering...');
   return (
     <>
-        <div className="wrapper">
-          <Header />
-          <div className="content">
-            <div className="container">
-              <div className="content__top">
-                <Categories />
-                <Sort />
-              </div>
-              <h2 className="content__title">Все пиццы</h2>
-              <div className="content__items">
-                {
-                  items.map(pizza => (
-                    <PizzaBlock key={pizza.id} pizza={pizza}/>
-                  ))
-                }
-              </div>
-            </div>
-          </div>
+      <div className="wrapper">
+        <div className="content">
+          <Routes>
+            <Route element={<Layout/>}>
+              <Route path="/" element={<Home />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path={'*'} element={<NotFound/>} />
+            </Route>
+          </Routes>
         </div>
+      </div>
     </>
   );
 };

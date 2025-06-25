@@ -25,14 +25,14 @@ ON CONFLICT (value) DO NOTHING;
 --changeset alex:4
 INSERT INTO pizza (id, title, image_url, category_id, rating)
 VALUES
-    (1, 'Охотничья', 'https://media.dodostatic.net/image/r:584x584/019635b27c727302835040e5d7c27caa.avif', 4, 10),
-    (2, 'Креветка и песто', 'https://media.dodostatic.net/image/r:584x584/019591b642d87304a62d322945990861.avif', 5, 10),
-    (3, 'Аррива!', 'https://media.dodostatic.net/image/r:584x584/019591a0591d7642b97bf6ed6da45252.avif', 1, 10),
-    (4, 'Четыре сыра 🌿', 'https://media.dodostatic.net/image/r:584x584/11ee7d612a1c13cbbfcc286c332d7762.avif', 2, 10),
-    (5, 'Чилл Грилл', 'https://media.dodostatic.net/image/r:584x584/019591c69fac7921a27e4ecd8c99f9df.avif', 1, 10),
-    (6, 'Креветки блю чиз', 'https://media.dodostatic.net/image/r:584x584/0195ca1dcb2f7341b78534772343b047.avif', 5, 10),
-    (7, 'Сырная 🌿👶', 'https://media.dodostatic.net/image/r:584x584/11ee7d610d2925109ab2e1c92cc5383c.avif', 2, 10),
-    (8, 'Пепперони фреш', 'https://media.dodostatic.net/image/r:584x584/11ee7d612fc7b7fca5be822752bee1e5.avif', 1, 10);
+    (1, 'Охотничья', 'https://media.dodostatic.net/image/r:292x292/019635b27c727302835040e5d7c27caa.avif', 4, 10),
+    (2, 'Креветка и песто', 'https://media.dodostatic.net/image/r:292x292/019591b642d87304a62d322945990861.avif', 5, 10),
+    (3, 'Аррива!', 'https://media.dodostatic.net/image/r:292x292/019591a0591d7642b97bf6ed6da45252.avif', 1, 10),
+    (4, 'Четыре сыра 🌿', 'https://media.dodostatic.net/image/r:292x292/11ee7d612a1c13cbbfcc286c332d7762.avif', 2, 10),
+    (5, 'Чилл Грилл', 'https://media.dodostatic.net/image/r:292x292/019591c69fac7921a27e4ecd8c99f9df.avif', 1, 10),
+    (6, 'Креветки блю чиз', 'https://media.dodostatic.net/image/r:292x292/0195ca1dcb2f7341b78534772343b047.avif', 5, 10),
+    (7, 'Сырная 🌿👶', 'https://media.dodostatic.net/image/r:292x292/11ee7d610d2925109ab2e1c92cc5383c.avif', 2, 10),
+    (8, 'Пепперони фреш', 'https://media.dodostatic.net/image/r:292x292/11ee7d612fc7b7fca5be822752bee1e5.avif', 1, 10);
 
 --changeset alex:5
 -- For pizza 1 (base price 629)
