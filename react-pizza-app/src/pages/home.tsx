@@ -14,6 +14,10 @@ export const Home = () => {
         setItems(data);
       })
       .finally(() => setLoading(false));
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }, []);
 
   return (

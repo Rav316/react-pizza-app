@@ -24,10 +24,10 @@ const App = () => {
       <div className="wrapper">
         <div className="content">
           <Routes>
-            <Route element={<Layout/>}>
+            <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path={'*'} element={<NotFound/>} />
+              <Route path={"*"} element={<NotFound />} />
             </Route>
           </Routes>
         </div>
