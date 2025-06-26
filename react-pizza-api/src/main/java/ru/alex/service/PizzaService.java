@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.database.repository.PizzaRepository;
+import ru.alex.dto.filter.PizzaFilter;
 import ru.alex.dto.pizza.PizzaListDto;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class PizzaService {
     private final PizzaRepository pizzaRepository;
 
-    public List<PizzaListDto> findAll() {
-        return pizzaRepository.findAllListItems();
+    public List<PizzaListDto> findAll(PizzaFilter filter) {
+        return pizzaRepository.findAllListItems(filter);
     }
 }

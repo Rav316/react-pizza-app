@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.alex.database.repository.PizzaRepositoryCustom;
 import ru.alex.dto.category.CategoryReadDto;
+import ru.alex.dto.filter.PizzaFilter;
 import ru.alex.dto.pizza.PizzaListDto;
 import ru.alex.dto.pizzaSize.PizzaSizeReadDto;
 import ru.alex.dto.pizzaType.PizzaTypeReadDto;
@@ -12,9 +13,11 @@ import ru.alex.dto.pizzaType.PizzaTypeReadDto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
@@ -33,22 +36,43 @@ public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
     }
 
     @Override
-    public List<PizzaListDto> findAllListItems() {
+    public List<PizzaListDto> findAllListItems(PizzaFilter filter) {
         List<PizzaMainData> mainData = getPizzaMainData();
 
         Map<Integer, List<PizzaTypeReadDto>> pizzaTypes = getPizzaTypes();
         Map<Integer, List<PizzaSizeReadDto>> pizzaSizes = getPizzaSizes();
 
-        return mainData.stream().map(data -> new PizzaListDto(
+        Stream<PizzaListDto> pizzas = mainData.stream().map(data -> new PizzaListDto(
                 data.id(),
                 data.title(),
-                data.price(), // Преобразуем BigDecimal в Integer
+                data.price(),
                 data.imageUrl(),
                 pizzaTypes.getOrDefault(data.id(), Collections.emptyList()),
                 pizzaSizes.getOrDefault(data.id(), Collections.emptyList()),
                 new CategoryReadDto(data.categoryId(), data.categoryTitle()),
                 data.rating()
-        )).toList();
+        ));
+        if (filter.category() != null) {
+            pizzas = pizzas.filter(pizza ->
+                    pizza.category().title().equals(filter.category())
+            );
+        }
+        if (filter.sort() != null) {
+            Comparator<PizzaListDto> comparator = switch (filter.sort()) {
+                case "price" -> Comparator.comparing(PizzaListDto::price);
+                case "alphabet" -> Comparator.comparing(PizzaListDto::title);
+                default -> Comparator.comparing(PizzaListDto::rating);
+            };
+            if(filter.order().equals("desc")) {
+                comparator = comparator.reversed();
+            }
+            pizzas = pizzas.sorted(comparator);
+        }
+        if(filter.search() != null) {
+            pizzas = pizzas.filter(pizza ->
+                    pizza.title().toLowerCase().contains(filter.search().toLowerCase()));
+        }
+        return pizzas.toList();
     }
 
     private List<PizzaMainData> getPizzaMainData() {
