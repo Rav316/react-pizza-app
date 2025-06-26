@@ -13,3 +13,9 @@ databaseChangeLog:
       file: db/changelog/db-create-pizza-table-1.1.sql
   - include:
       file: db/changelog/db-insert-init-data-1.0.sql
+  - include:
+      file: db/changelog/db-create-pizza-table-1.2.sql
+  - include:
+      file: db/changelog/db-insert-init-data-1.1.sql
+  - include:
+      file: db/changelog/db-insert-init-data-1.2.sql

@@ -52,7 +52,7 @@ public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
                 new CategoryReadDto(data.categoryId(), data.categoryTitle()),
                 data.rating()
         ));
-        if (filter.category() != null) {
+        if (filter.category() != null && !filter.category().equals("Все")) {
             pizzas = pizzas.filter(pizza ->
                     pizza.category().title().equals(filter.category())
             );

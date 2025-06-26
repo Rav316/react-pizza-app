@@ -2,8 +2,8 @@ package ru.alex.database.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.alex.database.entity.PizzaItem;
+import ru.alex.database.entity.Category;
 
 @Repository
-public interface PizzaItemRepository extends JpaRepository<PizzaItem, Integer> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 }

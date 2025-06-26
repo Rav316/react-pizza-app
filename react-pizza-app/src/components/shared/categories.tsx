@@ -1,26 +1,23 @@
-import { useState } from "react";
+import * as React from "react";
+import type { PizzaCategory } from "../../constants/pizza.ts";
 
-export const Categories = () => {
-  const categories = [
-    "Все",
-    "Мясные",
-    "Вегетарианская",
-    "Гриль",
-    "Острые",
-    "Закрытые",
-  ];
-  const [activeIndex, setActiveIndex] = useState(0);
+interface Props {
+  categories: PizzaCategory[];
+  value: number;
+  onChangeCategory: (id: number) => void;
+}
 
+export const Categories: React.FC<Props> = ({categories, value, onChangeCategory}) => {
   return (
     <div className="categories">
       <ul>
-        {categories.map((category, i) => (
+        {categories.map((category) => (
           <li
-            onClick={() => setActiveIndex(i)}
-            key={i}
-            className={activeIndex === i ? "active" : ""}
+            onClick={() => onChangeCategory(category.id)}
+            key={category.id}
+            className={value === category.id ? "active" : ""}
           >
-            {category}
+            {category.title}
           </li>
         ))}
       </ul>
