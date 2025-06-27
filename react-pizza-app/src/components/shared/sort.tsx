@@ -11,21 +11,27 @@ interface Props {
   order: OrderType;
 }
 
-export const Sort: React.FC<Props> = ({value, categories, onChangeCategory, order, onChangeOrder}) => {
+export const Sort: React.FC<Props> = ({
+  value,
+  categories,
+  onChangeCategory,
+  order,
+  onChangeOrder,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const onClickCategory = (value: string) => {
     onChangeCategory(value);
-    setIsVisible(false)
-  }
+    setIsVisible(false);
+  };
 
   return (
     <div className="sort">
       <div className="sort__label">
-        <SortIcon onChangeOrder={onChangeOrder} order={order}/>
+        <SortIcon onChangeOrder={onChangeOrder} order={order} />
         <b>Сортировка по:</b>
         <span onClick={() => setIsVisible((prev) => !prev)}>
-          {categories.find(c => c.value === value)?.label}
+          {categories.find((c) => c.value === value)?.label}
         </span>
       </div>
       {isVisible && (

@@ -6,6 +6,7 @@ import { Route, Routes } from "react-router";
 import { Cart } from "./pages/cart.tsx";
 import { Layout } from "./components/shared/layout.tsx";
 import { Home } from "./pages/home.tsx";
+import { useState } from "react";
 
 export interface Pizza {
   id: number;
@@ -19,13 +20,22 @@ export interface Pizza {
 }
 
 const App = () => {
+  const [searchValue, setSearchValue] = useState("");
+
   return (
     <>
       <div className="wrapper">
         <div className="content">
           <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
+            <Route
+              element={
+                <Layout
+                  searchValue={searchValue}
+                  setSearchValue={setSearchValue}
+                />
+              }
+            >
+              <Route path="/" element={<Home searchValue={searchValue} />} />
               <Route path="/cart" element={<Cart />} />
               <Route path={"*"} element={<NotFound />} />
             </Route>

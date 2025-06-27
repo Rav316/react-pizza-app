@@ -3,6 +3,7 @@ import { PizzaBlock } from "../components/shared/pizza-block/pizza-block.tsx";
 import { useEffect, useState } from "react";
 import type { Pizza } from "../App.tsx";
 import type { OrderType, PizzaCategory, SortType } from "../constants/pizza.ts";
+import * as React from "react";
 
 const sortCategories: SortType[] = [
   { label: "популярности", value: "popularity" },
@@ -10,7 +11,11 @@ const sortCategories: SortType[] = [
   { label: "Алфавиту", value: "alphabet" },
 ];
 
-export const Home = () => {
+interface Props {
+  searchValue: string;
+}
+
+export const Home: React.FC<Props> = ({searchValue}) => {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Pizza[]>([]);
   const [categories, setCategories] = useState<PizzaCategory[]>([]);
@@ -34,15 +39,18 @@ export const Home = () => {
   useEffect(() => {
     setLoading(true);
     fetch(
-      `http://localhost:8080/api/pizza?category=${categories.find((c) => c.id === categoryId)?.title}&sortBy=${sortCategories.find((c) => c.value === selectedSort)?.value}&order=${order}`,
+      `http://localhost:8080/api/pizza?category=${categories.find((c) => c.id === categoryId)?.title}&sortBy=${sortCategories.find((c) => c.value === selectedSort)?.value}&order=${order}&search=${searchValue}`,
     )
       .then((res) => res.json())
       .then((data: Pizza[]) => {
         setItems(data);
       })
       .finally(() => setLoading(false));
-  }, [categories, categoryId, order, selectedSort]);
+  }, [categories, categoryId, order, selectedSort, searchValue]);
 
+  const pizzas = items.filter((item) =>
+    item.title.toLowerCase().includes(searchValue.toLowerCase()),
+  );
   return (
     <div className="container">
       <div className="content__top">
@@ -65,7 +73,7 @@ export const Home = () => {
           ? Array(8)
               .fill(0)
               .map((_, index) => <PizzaSkeleton key={index} />)
-          : items.map((pizza) => <PizzaBlock key={pizza.id} pizza={pizza} />)}
+          : pizzas.map((pizza) => <PizzaBlock key={pizza.id} pizza={pizza} />)}
       </div>
     </div>
   );

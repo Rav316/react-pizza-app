@@ -1,7 +1,15 @@
 import logoSvg from "../../assets/img/pizza-logo.svg";
 import { Link } from "react-router";
+import { Search } from "./search/search.tsx";
+import * as React from "react";
 
-export const Header = () => {
+interface Props {
+  searchValue: string;
+  setSearchValue: (value: string) => void
+}
+
+
+export const Header: React.FC<Props> = ({searchValue, setSearchValue}) => {
   return (
     <div className="header">
       <div className="container">
@@ -15,6 +23,7 @@ export const Header = () => {
             </div>
           </div>
         </Link>
+        <Search searchValue={searchValue} setSearchValue={setSearchValue}/>
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
             <span>520 ₽</span>
