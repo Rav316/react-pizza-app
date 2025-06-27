@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Pizza } from "../App.tsx";
 import type { OrderType, PizzaCategory, SortType } from "../constants/pizza.ts";
 import * as React from "react";
+import { Pagination } from "../components/shared/pagination/pagination.tsx";
 
 const sortCategories: SortType[] = [
   { label: "популярности", value: "popularity" },
@@ -75,6 +76,7 @@ export const Home: React.FC<Props> = ({searchValue}) => {
               .map((_, index) => <PizzaSkeleton key={index} />)
           : pizzas.map((pizza) => <PizzaBlock key={pizza.id} pizza={pizza} />)}
       </div>
+      <Pagination/>
     </div>
   );
 };
