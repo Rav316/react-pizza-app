@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'ru.alex'
@@ -11,6 +12,10 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+configurations {
+    querydsl.extendsFrom implementation, runtimeOnly, compileOnly
 }
 
 configurations {
@@ -27,12 +32,28 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.liquibase:liquibase-core'
+    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+    implementation 'com.querydsl:querydsl-core:5.1.0'
+    implementation 'org.hibernate.orm:hibernate-core:7.0.3.Final'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api:3.2.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+querydsl {
+    jpa = true
+    library = "com.querydsl:querydsl-apt:5.1.0:jakarta"
+    querydslSourcesDir = layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main").get().asFile
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+compileQuerydsl.dependsOn(clean)
 
 tasks.named('test') {
     useJUnitPlatform()

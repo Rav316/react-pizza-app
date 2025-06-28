@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { PizzaCategory } from "../../constants/pizza.ts";
+import type { PizzaCategory } from "../../../constants/pizza.ts";
 
 interface Props {
   categories: PizzaCategory[];

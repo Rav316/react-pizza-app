@@ -1,8 +1,20 @@
 package ru.alex.database.repository.impl;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import ru.alex.database.entity.QCategory;
+import ru.alex.database.entity.QPizza;
+import ru.alex.database.entity.QPizzaItem;
+import ru.alex.database.entity.QPizzaSize;
+import ru.alex.database.entity.QPizzaType;
 import ru.alex.database.repository.PizzaRepositoryCustom;
 import ru.alex.dto.category.CategoryReadDto;
 import ru.alex.dto.filter.PizzaFilter;
@@ -10,135 +22,150 @@ import ru.alex.dto.pizza.PizzaListDto;
 import ru.alex.dto.pizzaSize.PizzaSizeReadDto;
 import ru.alex.dto.pizzaType.PizzaTypeReadDto;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
-    private final JdbcTemplate jdbcTemplate;
-
-    private record PizzaMainData(
-            int id,
-            String title,
-            BigDecimal price,
-            String imageUrl,
-            int categoryId,
-            String categoryTitle,
-            int rating
-    ) {
-    }
+    private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<PizzaListDto> findAllListItems(PizzaFilter filter) {
-        List<PizzaMainData> mainData = getPizzaMainData();
+    public Page<PizzaListDto> findAllListItems(PizzaFilter filter, Pageable pageable) {
+        QPizza pizza = QPizza.pizza;
+        QCategory category = QCategory.category;
+        QPizzaItem pizzaItem = QPizzaItem.pizzaItem;
 
-        Map<Integer, List<PizzaTypeReadDto>> pizzaTypes = getPizzaTypes();
-        Map<Integer, List<PizzaSizeReadDto>> pizzaSizes = getPizzaSizes();
+        List<Tuple> tuples = queryFactory
+                .select(
+                        pizza.id,
+                        pizza.title,
+                        pizza.imageUrl,
+                        pizza.rating,
+                        category.id,
+                        category.title,
+                        pizzaItem.price.min()
+                )
+                .from(pizza)
+                .join(pizza.category, category)
+                .leftJoin(pizzaItem).on(pizzaItem.pizza.eq(pizza))
+                .groupBy(pizza.id, category.id, pizza.title, pizza.imageUrl, pizza.rating, category.title)
+                .where(buildPredicate(filter))
+                .orderBy(getSortOrder(filter))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        Stream<PizzaListDto> pizzas = mainData.stream().map(data -> new PizzaListDto(
-                data.id(),
-                data.title(),
-                data.price(),
-                data.imageUrl(),
-                pizzaTypes.getOrDefault(data.id(), Collections.emptyList()),
-                pizzaSizes.getOrDefault(data.id(), Collections.emptyList()),
-                new CategoryReadDto(data.categoryId(), data.categoryTitle()),
-                data.rating()
-        ));
-        if (filter.category() != null && !filter.category().equals("Все")) {
-            pizzas = pizzas.filter(pizza ->
-                    pizza.category().title().equals(filter.category())
+        List<Integer> pizzaIds = tuples.stream().map(t -> t.get(pizza.id)).toList();
+
+        Map<Integer, List<PizzaTypeReadDto>> pizzaTypes = fetchPizzaTypes(pizzaIds);
+        Map<Integer, List<PizzaSizeReadDto>> pizzaSizes = fetchPizzaSizes(pizzaIds);
+
+        Long total = queryFactory
+                .select(pizza.count())
+                .from(pizza)
+                .join(pizza.category, category)
+                .where(buildPredicate(filter))
+                .fetchOne();
+
+        List<PizzaListDto> pizzas = tuples.stream().map(t -> {
+            int id = Objects.requireNonNull(t.get(pizza.id));
+            return new PizzaListDto(
+                    id,
+                    t.get(pizza.title),
+                    t.get(pizzaItem.price.min()),
+                    t.get(pizza.imageUrl),
+                    pizzaTypes.getOrDefault(id, Collections.emptyList()),
+                    pizzaSizes.getOrDefault(id, Collections.emptyList()),
+                    new CategoryReadDto(t.get(category.id), t.get(category.title)),
+                    t.get(pizza.rating)
             );
+        }).toList();
+        return new PageImpl<>(pizzas, pageable, Objects.requireNonNull(total));
+    }
+
+    private BooleanExpression buildPredicate(PizzaFilter filter) {
+        QCategory category = QCategory.category;
+        QPizza pizza = QPizza.pizza;
+
+        BooleanExpression predicate = Expressions.TRUE.isTrue();
+        if(filter.category() != null && !filter.category().equalsIgnoreCase("Все")) {
+            predicate = predicate.and(category.title.eq(filter.category()));
         }
-        if (filter.sort() != null) {
-            Comparator<PizzaListDto> comparator = switch (filter.sort()) {
-                case "price" -> Comparator.comparing(PizzaListDto::price);
-                case "alphabet" -> Comparator.comparing(PizzaListDto::title);
-                default -> Comparator.comparing(PizzaListDto::rating);
+        if (filter.search() != null && !filter.search().isBlank()) {
+            predicate = predicate.and(pizza.title.containsIgnoreCase(filter.search()));
+        }
+        return predicate;
+    }
+
+    private OrderSpecifier<?>[] getSortOrder(PizzaFilter filter) {
+        QPizza pizza = QPizza.pizza;
+        QPizzaItem pizzaItem = QPizzaItem.pizzaItem;
+
+        boolean desc = filter.order() != null && filter.order().equalsIgnoreCase("desc");
+
+        OrderSpecifier<?> primarySort;
+
+        if (filter.sort() == null) {
+            primarySort = desc ? pizza.rating.desc() : pizza.rating.asc();
+        } else {
+            primarySort = switch (filter.sort()) {
+                case "price" -> desc ? pizzaItem.price.min().desc() : pizzaItem.price.min().asc();
+                case "alphabet" -> desc ? pizza.title.desc() : pizza.title.asc();
+                default -> desc ? pizza.rating.desc() : pizza.rating.asc();
             };
-            if(filter.order().equals("desc")) {
-                comparator = comparator.reversed();
-            }
-            pizzas = pizzas.sorted(comparator);
         }
-        if(filter.search() != null) {
-            pizzas = pizzas.filter(pizza ->
-                    pizza.title().toLowerCase().contains(filter.search().toLowerCase()));
-        }
-        return pizzas.toList();
+
+        return new OrderSpecifier<?>[] {
+                primarySort,
+                desc ? pizza.id.desc() : pizza.id.asc()
+        };
     }
 
-    private List<PizzaMainData> getPizzaMainData() {
-        String sql = """
-                SELECT p.id, p.title, MIN(pi.price) AS min_price, p.image_url,
-                       c.id AS category_id, c.title AS category_title, p.rating
-                FROM pizza p
-                JOIN category c ON p.category_id = c.id
-                LEFT JOIN pizza_item pi ON p.id = pi.pizza_id
-                GROUP BY p.id, c.id, p.title, p.image_url, p.rating
-                ORDER BY p.id
-                """;
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new PizzaMainData(
-                rs.getInt("id"),
-                rs.getString("title"),
-                rs.getBigDecimal("min_price"),
-                rs.getString("image_url"),
-                rs.getInt("category_id"),
-                rs.getString("category_title"),
-                rs.getInt("rating")
-        ));
+
+    private Map<Integer, List<PizzaTypeReadDto>> fetchPizzaTypes(List<Integer> pizzaIds) {
+        QPizzaItem pizzaItem = QPizzaItem.pizzaItem;
+        QPizzaType pizzaType = QPizzaType.pizzaType;
+
+        return queryFactory
+                .select(pizzaItem.pizza.id, pizzaType.id, pizzaType.title)
+                .from(pizzaItem)
+                .join(pizzaItem.type, pizzaType)
+                .where(pizzaItem.pizza.id.in(pizzaIds))
+                .distinct()
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> Objects.requireNonNull(tuple.get(pizzaItem.pizza.id)),
+                        Collectors.mapping(tuple -> new PizzaTypeReadDto(
+                                tuple.get(pizzaType.id),
+                                tuple.get(pizzaType.title)
+                        ), Collectors.toList())
+                ));
     }
 
-    private Map<Integer, List<PizzaTypeReadDto>> getPizzaTypes() {
-        String sql = """
-                SELECT DISTINCT pi.pizza_id, pt.id, pt.title
-                FROM pizza_item pi
-                JOIN pizza_type pt ON pi.pizza_type_id = pt.id
-                ORDER BY pi.pizza_id, pt.id
-                """;
-        return jdbcTemplate.query(sql, rs -> {
-            Map<Integer, List<PizzaTypeReadDto>> resultMap = new HashMap<>();
-            while (rs.next()) {
-                int pizzaId = rs.getInt("pizza_id");
-                PizzaTypeReadDto dto = new PizzaTypeReadDto(
-                        rs.getInt("id"),
-                        rs.getString("title")
-                );
+    private Map<Integer, List<PizzaSizeReadDto>> fetchPizzaSizes(List<Integer> pizzaIds) {
+        QPizzaItem pizzaItem = QPizzaItem.pizzaItem;
+        QPizzaSize pizzaSize = QPizzaSize.pizzaSize;
 
-                resultMap.computeIfAbsent(pizzaId, k -> new ArrayList<>())
-                        .add(dto);
-            }
-            return resultMap;
-        });
+        return queryFactory
+                .select(pizzaItem.pizza.id, pizzaSize.id, pizzaSize.value)
+                .from(pizzaItem)
+                .join(pizzaItem.size, pizzaSize)
+                .where(pizzaItem.pizza.id.in(pizzaIds))
+                .distinct()
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> Objects.requireNonNull(tuple.get(pizzaItem.pizza.id)),
+                        Collectors.mapping(tuple -> new PizzaSizeReadDto(
+                                tuple.get(pizzaSize.id),
+                                tuple.get(pizzaSize.value)
+                        ), Collectors.toList())
+                ));
     }
 
-    private Map<Integer, List<PizzaSizeReadDto>> getPizzaSizes() {
-        String sql = """
-                SELECT DISTINCT pi.pizza_id, ps.id, ps.value
-                FROM pizza_item pi
-                JOIN pizza_size ps ON pi.pizza_size_id = ps.id
-                ORDER BY pi.pizza_id, ps.id
-                """;
-        return jdbcTemplate.query(sql, rs -> {
-            Map<Integer, List<PizzaSizeReadDto>> resultMap = new HashMap<>();
-            while (rs.next()) {
-                int pizzaId = rs.getInt("pizza_id");
-                PizzaSizeReadDto dto = new PizzaSizeReadDto(
-                        rs.getInt("id"),
-                        rs.getInt("value")
-                );
-
-                resultMap.computeIfAbsent(pizzaId, k -> new ArrayList<>())
-                        .add(dto);
-            }
-            return resultMap;
-        });
-    }
 }

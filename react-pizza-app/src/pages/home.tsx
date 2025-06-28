@@ -1,10 +1,11 @@
 import { Categories, PizzaSkeleton, Sort } from "../components/shared";
 import { PizzaBlock } from "../components/shared/pizza-block/pizza-block.tsx";
 import { useEffect, useState } from "react";
-import type { Pizza } from "../App.tsx";
+import type { PageResponse, Pizza } from "../App.tsx";
 import type { OrderType, PizzaCategory, SortType } from "../constants/pizza.ts";
 import * as React from "react";
 import { Pagination } from "../components/shared/pagination/pagination.tsx";
+import { CategoriesSkeleton } from "../components/shared/categories/categories-skeleton.tsx";
 
 const sortCategories: SortType[] = [
   { label: "популярности", value: "popularity" },
@@ -16,8 +17,9 @@ interface Props {
   searchValue: string;
 }
 
-export const Home: React.FC<Props> = ({searchValue}) => {
-  const [loading, setLoading] = useState(true);
+export const Home: React.FC<Props> = ({ searchValue }) => {
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingPizzas, setLoadingPizzas] = useState(true);
   const [items, setItems] = useState<Pizza[]>([]);
   const [categories, setCategories] = useState<PizzaCategory[]>([]);
   const [categoryId, setCategoryId] = useState(0);
@@ -25,11 +27,13 @@ export const Home: React.FC<Props> = ({searchValue}) => {
   const [order, setOrder] = useState<OrderType>("desc");
 
   useEffect(() => {
+    setLoadingCategories(true);
     fetch("http://localhost:8080/api/categories")
       .then((res) => res.json())
-      .then((data: PizzaCategory[]) =>
-        setCategories([{ id: 0, title: "Все" }, ...data]),
-      );
+      .then((data: PizzaCategory[]) => {
+        setCategories([{ id: 0, title: "Все" }, ...data]);
+        setLoadingCategories(false);
+      });
 
     window.scrollTo({
       top: 0,
@@ -38,15 +42,15 @@ export const Home: React.FC<Props> = ({searchValue}) => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
+    setLoadingPizzas(true);
     fetch(
-      `http://localhost:8080/api/pizza?category=${categories.find((c) => c.id === categoryId)?.title}&sortBy=${sortCategories.find((c) => c.value === selectedSort)?.value}&order=${order}&search=${searchValue}`,
+      `http://localhost:8080/api/pizza?category=${categories.length === 0 ? 'Все' : categories.find((c) => c.id === categoryId)?.title}&sort=${sortCategories.find((c) => c.value === selectedSort)?.value}&order=${order}&search=${searchValue}`,
     )
       .then((res) => res.json())
-      .then((data: Pizza[]) => {
-        setItems(data);
-      })
-      .finally(() => setLoading(false));
+      .then((data: PageResponse<Pizza>) => {
+        setItems(data.content);
+        setLoadingPizzas(false);
+      });
   }, [categories, categoryId, order, selectedSort, searchValue]);
 
   const pizzas = items.filter((item) =>
@@ -55,11 +59,15 @@ export const Home: React.FC<Props> = ({searchValue}) => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories
-          categories={categories}
-          value={categoryId}
-          onChangeCategory={(id: number) => setCategoryId(id)}
-        />
+        {loadingCategories ? (
+          <CategoriesSkeleton />
+        ) : (
+          <Categories
+            categories={categories}
+            value={categoryId}
+            onChangeCategory={(id: number) => setCategoryId(id)}
+          />
+        )}
         <Sort
           value={selectedSort}
           categories={sortCategories}
@@ -70,13 +78,13 @@ export const Home: React.FC<Props> = ({searchValue}) => {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
-        {loading
+        {loadingPizzas
           ? Array(8)
               .fill(0)
               .map((_, index) => <PizzaSkeleton key={index} />)
           : pizzas.map((pizza) => <PizzaBlock key={pizza.id} pizza={pizza} />)}
       </div>
-      <Pagination/>
+      {!loadingPizzas && <Pagination />}
     </div>
   );
 };
