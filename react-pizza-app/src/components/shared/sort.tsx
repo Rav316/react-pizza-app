@@ -6,7 +6,7 @@ import { SortIcon } from "../ui";
 interface Props {
   value: string;
   categories: SortType[];
-  onChangeCategory: (value: string) => void;
+  onChangeSort: (value: string) => void;
   onChangeOrder: (value: OrderType) => void;
   order: OrderType;
 }
@@ -14,14 +14,14 @@ interface Props {
 export const Sort: React.FC<Props> = ({
   value,
   categories,
-  onChangeCategory,
+  onChangeSort,
   order,
   onChangeOrder,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const onClickCategory = (value: string) => {
-    onChangeCategory(value);
+    onChangeSort(value);
     setIsVisible(false);
   };
 
