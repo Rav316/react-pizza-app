@@ -1,12 +1,18 @@
 import { Categories, PizzaSkeleton, Sort } from "../components/shared";
 import { PizzaBlock } from "../components/shared/pizza-block/pizza-block.tsx";
-import { useEffect, useState } from "react";
-import type { PageResponse, Pizza } from "../App.tsx";
-import type { OrderType, PizzaCategory, SortType } from "../constants/pizza.ts";
+import { useContext, useEffect, useState } from "react";
+import type { OrderType } from "../constants/pizza.ts";
 import * as React from "react";
 import { Pagination } from "../components/shared/pagination/pagination.tsx";
 import { CategoriesSkeleton } from "../components/shared/categories/categories-skeleton.tsx";
 import { useDebounce } from "use-debounce";
+import type {
+  PageResponse,
+  Pizza,
+  PizzaCategory,
+  SortType,
+} from "../service/model.ts";
+import { SearchContext } from "../context/search-context.tsx";
 
 const sortCategories: SortType[] = [
   { label: "популярности", value: "popularity" },
@@ -14,11 +20,9 @@ const sortCategories: SortType[] = [
   { label: "Алфавиту", value: "alphabet" },
 ];
 
-interface Props {
-  searchValue: string;
-}
-
-export const Home: React.FC<Props> = ({ searchValue }) => {
+export const Home: React.FC = () => {
+  const {searchValue} = useContext(SearchContext);
+  console.log('render Home component');
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingPizzas, setLoadingPizzas] = useState(true);
   const [items, setItems] = useState<PageResponse<Pizza>>({
@@ -116,7 +120,7 @@ export const Home: React.FC<Props> = ({ searchValue }) => {
         <Pagination
           pageCount={items.metadata.totalElements / items.metadata.size}
           currentPage={currentPage}
-          onPageChange={page => setCurrentPage(page)}
+          onPageChange={(page) => setCurrentPage(page)}
           pageSize={pageSize}
         />
       )}

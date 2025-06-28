@@ -2,15 +2,10 @@ import { Header } from "./header.tsx";
 import { Outlet } from "react-router";
 import * as React from "react";
 
-interface Props {
-  searchValue: string;
-  setSearchValue: (value: string) => void
-}
-
-export const Layout: React.FC<Props> = ({searchValue, setSearchValue}) => {
+export const Layout: React.FC = () => {
   return (
     <>
-      <Header searchValue={searchValue} setSearchValue={setSearchValue}/>
+      <Header />
       <Outlet/>
     </>
   );

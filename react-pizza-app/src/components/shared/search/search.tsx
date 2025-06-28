@@ -3,13 +3,12 @@ import styles from "./search.module.scss";
 import searchIcon from "../../../assets/img/search.svg";
 import clearIcon from "../../../assets/img/clear.svg";
 import * as React from "react";
+import { useContext } from "react";
+import { SearchContext } from "../../../context/search-context.tsx";
 
-interface Props {
-  searchValue: string;
-  setSearchValue: (value: string) => void;
-}
-
-export const Search: React.FC<Props> = ({ searchValue, setSearchValue }) => {
+export const Search: React.FC = () => {
+  const {searchValue, setSearchValue} = useContext(SearchContext);
+  console.log('render Search components');
   return (
     <div className={styles.root}>
       <img className={styles.icon} src={searchIcon} alt="search" />
