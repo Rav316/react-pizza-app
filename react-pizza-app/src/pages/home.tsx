@@ -10,6 +10,7 @@ import { SearchContext } from "../context/search-context.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../redux/store.ts";
 import { setCurrentPage } from "../redux/slice/paginationSlice.ts";
+import { Api } from "../service/api-client.ts";
 
 export const Home: React.FC = () => {
   const { searchValue } = useContext(SearchContext);
@@ -33,12 +34,10 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     setLoadingCategories(true);
-    fetch("http://localhost:8080/api/categories")
-      .then((res) => res.json())
-      .then((data: PizzaCategory[]) => {
-        setCategories([{ id: 0, title: "Все" }, ...data]);
-        setLoadingCategories(false);
-      });
+    Api.categories.findAll().then(data => {
+      setCategories([{ id: 0, title: "Все" }, ...data]);
+      setLoadingCategories(false);
+    })
 
     window.scrollTo({
       top: 0,
@@ -48,14 +47,20 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     setLoadingPizzas(true);
-    fetch(
-      `http://localhost:8080/api/pizza?category=${categories.length === 0 ? "Все" : categories.find((c) => c.id === categoryId)?.title}&sort=${selectedSort.value}&order=${selectedOrder}&search=${searchValue}&query=${debouncedSearch}&page=${currentPage}&size=${pageSize}`,
-    )
-      .then((res) => res.json())
-      .then((data: PageResponse<Pizza>) => {
-        setItems(data);
-        setLoadingPizzas(false);
-      });
+
+    Api.pizzas.findAll({
+      category: categories.length === 0 ? "Все" : categories.find((c) => c.id === categoryId)?.title,
+      sort: selectedSort.value,
+      order: selectedOrder,
+      search: searchValue,
+      query: debouncedSearch,
+      page: currentPage,
+      size: pageSize
+    }).then(data => {
+      setItems(data);
+      setLoadingPizzas(false);
+    })
+
   }, [categories, categoryId, debouncedSearch, currentPage, selectedSort.value, selectedOrder, searchValue]);
 
   const handleChangeCategory = (id: number) => {
