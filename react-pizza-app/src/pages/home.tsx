@@ -34,10 +34,10 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     setLoadingCategories(true);
-    Api.categories.findAll().then(data => {
+    Api.categories.findAll().then((data) => {
       setCategories([{ id: 0, title: "Все" }, ...data]);
       setLoadingCategories(false);
-    })
+    });
 
     window.scrollTo({
       top: 0,
@@ -48,20 +48,32 @@ export const Home: React.FC = () => {
   useEffect(() => {
     setLoadingPizzas(true);
 
-    Api.pizzas.findAll({
-      category: categories.length === 0 ? "Все" : categories.find((c) => c.id === categoryId)?.title,
-      sort: selectedSort.value,
-      order: selectedOrder,
-      search: searchValue,
-      query: debouncedSearch,
-      page: currentPage,
-      size: pageSize
-    }).then(data => {
-      setItems(data);
-      setLoadingPizzas(false);
-    })
-
-  }, [categories, categoryId, debouncedSearch, currentPage, selectedSort.value, selectedOrder, searchValue]);
+    Api.pizzas
+      .findAll({
+        category:
+          categories.length === 0
+            ? "Все"
+            : categories.find((c) => c.id === categoryId)?.title,
+        sort: selectedSort.value,
+        order: selectedOrder,
+        search: searchValue,
+        query: debouncedSearch,
+        page: currentPage,
+        size: pageSize,
+      })
+      .then((data) => {
+        setItems(data);
+        setLoadingPizzas(false);
+      });
+  }, [
+    categories,
+    categoryId,
+    debouncedSearch,
+    currentPage,
+    selectedSort.value,
+    selectedOrder,
+    searchValue,
+  ]);
 
   const handleChangeCategory = (id: number) => {
     setCategoryId(id);
