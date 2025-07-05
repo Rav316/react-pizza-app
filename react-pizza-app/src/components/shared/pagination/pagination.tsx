@@ -2,15 +2,18 @@ import styles from './pagination.module.scss';
 
 import ReactPaginate from "react-paginate";
 import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../redux/store.ts";
+import { setCurrentPage } from "../../../redux/slice/paginationSlice.ts";
 
 interface Props {
   pageCount: number;
-  currentPage: number;
-  onPageChange: (page: number) => void;
   pageSize: number;
 }
 
-export const Pagination: React.FC<Props> = ({pageCount, currentPage, onPageChange, pageSize}) => {
+export const Pagination: React.FC<Props> = ({pageCount, pageSize}) => {
+  const currentPage = useSelector((state: RootState) => state.pagination.currentPage);
+  const dispatch = useDispatch();
   return (
     <ReactPaginate
       className={styles.root}
@@ -18,7 +21,7 @@ export const Pagination: React.FC<Props> = ({pageCount, currentPage, onPageChang
       breakLabel="..."
       nextLabel=">"
       previousLabel="<"
-      onPageChange={e => onPageChange(e.selected)}
+      onPageChange={e => dispatch(setCurrentPage(e.selected))}
       pageRangeDisplayed={pageSize}
       pageCount={pageCount}
       renderOnZeroPageCount={null}
