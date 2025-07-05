@@ -1,14 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { SortType } from "../../service/model.ts";
 import type { OrderType } from "../../constants/pizza.ts";
 
 interface SortSlice {
-  selectedSort: SortType;
+  selectedSort: string;
   selectedOrder: OrderType;
 }
 
 const initialState: SortSlice = {
-  selectedSort: {label: 'популярности', value: 'popularity'},
+  selectedSort: 'popularity',
   selectedOrder: 'desc'
 }
 

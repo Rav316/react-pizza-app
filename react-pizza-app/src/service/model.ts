@@ -34,8 +34,3 @@ export interface PizzaType {
   id: number;
   title: string;
 }
-
-export interface SortType {
-  label: string;
-  value: string;
-}

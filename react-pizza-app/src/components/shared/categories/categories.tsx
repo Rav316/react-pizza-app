@@ -1,21 +1,32 @@
 import * as React from "react";
-import type { PizzaCategory } from "../../../constants/pizza.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/store.ts";
+import { useEffect } from "react";
+import { Api } from "../../../service/api-client.ts";
+import { loadCategories, setCategory } from "../../../redux/slice/categorySlice.ts";
+import { setCurrentPage } from "../../../redux/slice/paginationSlice.ts";
 
-interface Props {
-  categories: PizzaCategory[];
-  value: number;
-  onChangeCategory: (id: number) => void;
-}
+export const Categories: React.FC = () => {
+  const {categories, selectedCategory} = useSelector((state: RootState) => state.category);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    Api.categories.findAll()
+      .then(data => dispatch(loadCategories(data)))
+  }, [dispatch]);
 
-export const Categories: React.FC<Props> = ({categories, value, onChangeCategory}) => {
+  const onClickCategory = (id: number) => {
+    dispatch(setCategory(id));
+    dispatch(setCurrentPage(0));
+  }
+
   return (
     <div className="categories">
       <ul>
         {categories.map((category) => (
           <li
-            onClick={() => onChangeCategory(category.id)}
+            onClick={() => onClickCategory(category.id)}
             key={category.id}
-            className={value === category.id ? "active" : ""}
+            className={selectedCategory === category.id ? "active" : ""}
           >
             {category.title}
           </li>
