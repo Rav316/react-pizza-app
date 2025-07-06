@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import type { Pizza } from "../../../App.tsx";
+import { Pizza } from "../../../service/model.ts";
 
 interface Props {
   pizza: Pizza;

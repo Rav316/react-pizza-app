@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store.ts";
 import { useEffect } from "react";
 import { Api } from "../../../service/api-client.ts";
-import { loadCategories, setCategory } from "../../../redux/slice/categorySlice.ts";
-import { setCurrentPage } from "../../../redux/slice/paginationSlice.ts";
+import { loadCategories, setCategory } from "../../../redux/slice/category-slice.ts";
+import { setCurrentPage } from "../../../redux/slice/pagination-slice.ts";
 
 export const Categories: React.FC = () => {
   const {categories, selectedCategory} = useSelector((state: RootState) => state.category);

@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import sortReducer from './slice/sortSlice';
-import paginationReducer from './slice/paginationSlice';
-import categoryReducer from './slice/categorySlice';
+import sortReducer from './slice/sort-slice.ts';
+import paginationReducer from './slice/pagination-slice.ts';
+import categoryReducer from './slice/category-slice.ts';
 
 export const store = configureStore({
   reducer: {

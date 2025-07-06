@@ -12,9 +12,9 @@ import type { RootState } from "../redux/store.ts";
 import { Api } from "../service/api-client.ts";
 import qs from "qs";
 import { useNavigate } from "react-router";
-import { setSort } from "../redux/slice/sortSlice.ts";
-import { setCategory } from "../redux/slice/categorySlice.ts";
-import { setCurrentPage } from "../redux/slice/paginationSlice.ts";
+import { setSort } from "../redux/slice/sort-slice.ts";
+import { setCategory } from "../redux/slice/category-slice.ts";
+import { setCurrentPage } from "../redux/slice/pagination-slice.ts";
 import { sortCategories } from "../constants/sort.ts";
 
 export const Home: React.FC = () => {

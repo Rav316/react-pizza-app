@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { setSort } from "../../redux/slice/sortSlice.ts";
-import { setCategory } from "../../redux/slice/categorySlice.ts";
-import { setCurrentPage } from "../../redux/slice/paginationSlice.ts";
+import { setSort } from "../../redux/slice/sort-slice.ts";
+import { setCategory } from "../../redux/slice/category-slice.ts";
+import { setCurrentPage } from "../../redux/slice/pagination-slice.ts";
 import logoSvg from "../../assets/img/pizza-logo.svg";
 
 export const HeaderLogo = () => {

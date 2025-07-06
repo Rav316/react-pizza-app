@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../redux/store.ts";
-import { setCurrentPage } from "../../../redux/slice/paginationSlice.ts";
+import { setCurrentPage } from "../../../redux/slice/pagination-slice.ts";
 
 interface Props {
   pageCount: number;
