@@ -1,23 +1,19 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux/store.ts";
-import { useEffect } from "react";
-import { Api } from "../../../service/api-client.ts";
-import { loadCategories, setCategory } from "../../../redux/slice/category-slice.ts";
+import { AppDispatch, RootState } from "../../../redux/store.ts";
+import { setCategory } from "../../../redux/slice/category-slice.ts";
 import { setCurrentPage } from "../../../redux/slice/pagination-slice.ts";
 
 export const Categories: React.FC = () => {
-  const {categories, selectedCategory} = useSelector((state: RootState) => state.category);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    Api.categories.findAll()
-      .then(data => dispatch(loadCategories(data)))
-  }, [dispatch]);
+  const { categories, selectedCategory } = useSelector(
+    (state: RootState) => state.category,
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   const onClickCategory = (id: number) => {
     dispatch(setCategory(id));
     dispatch(setCurrentPage(0));
-  }
+  };
 
   return (
     <div className="categories">

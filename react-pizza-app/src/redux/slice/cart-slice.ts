@@ -1,5 +1,5 @@
 import { CartItem } from "../../service/model.ts";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface CartSlice {
   totalPrice: number;
@@ -13,7 +13,7 @@ const initialState: CartSlice = {
 
 const calculateTotalPrice = (items: CartItem[]) => {
   return items.reduce((sum, item) => sum + item.price * item.count, 0);
-}
+};
 
 const cartSlice = createSlice({
   name: "cart",
@@ -40,8 +40,8 @@ const cartSlice = createSlice({
       const findItem = state.items.find(
         (item) => item.itemId === action.payload,
       );
-      if(findItem) {
-        if(findItem.count > 1) {
+      if (findItem) {
+        if (findItem.count > 1) {
           findItem.count--;
         } else {
           state.items = state.items.filter(
@@ -50,7 +50,6 @@ const cartSlice = createSlice({
         }
       }
       calculateTotalPrice(state.items);
-
     },
     clearCart: (state) => {
       state.items = [];
@@ -59,5 +58,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addItem, removeItem, decrementItem, clearCart } = cartSlice.actions;
+export const { addItem, removeItem, decrementItem, clearCart } =
+  cartSlice.actions;
 export default cartSlice.reducer;

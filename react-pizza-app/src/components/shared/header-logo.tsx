@@ -4,9 +4,10 @@ import { setSort } from "../../redux/slice/sort-slice.ts";
 import { setCategory } from "../../redux/slice/category-slice.ts";
 import { setCurrentPage } from "../../redux/slice/pagination-slice.ts";
 import logoSvg from "../../assets/img/pizza-logo.svg";
+import { AppDispatch } from "../../redux/store.ts";
 
 export const HeaderLogo = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const handleReset = () => {

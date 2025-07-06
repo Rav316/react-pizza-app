@@ -1,16 +1,18 @@
 import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store.ts";
+import { AppDispatch, RootState } from "../redux/store.ts";
 import { CartElement } from "../components/shared/cart/cart-element.tsx";
 import { CartEmpty } from "../components/shared/cart/cart-empty.tsx";
 import { clearCart } from "../redux/slice/cart-slice.ts";
 
 export const Cart = () => {
-  const dispatch = useDispatch();
-  const {items: cartItems, totalPrice} = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch<AppDispatch>();
+  const { items: cartItems, totalPrice } = useSelector(
+    (state: RootState) => state.cart,
+  );
 
-  if(!totalPrice) {
-    return <CartEmpty/>
+  if (!totalPrice) {
+    return <CartEmpty />;
   }
 
   return (
@@ -91,11 +93,9 @@ export const Cart = () => {
           </div>
         </div>
         <div className="content__items">
-          {
-            cartItems.map((item) => (
-              <CartElement key={item.itemId} item={item} />
-            ))
-          }
+          {cartItems.map((item) => (
+            <CartElement key={item.itemId} item={item} />
+          ))}
         </div>
         <div className="cart__bottom">
           <div className="cart__bottom-details">

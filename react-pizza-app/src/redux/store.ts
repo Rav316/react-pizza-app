@@ -1,17 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import sortReducer from './slice/sort-slice.ts';
-import paginationReducer from './slice/pagination-slice.ts';
-import categoryReducer from './slice/category-slice.ts';
-import cartReducer from './slice/cart-slice.ts';
+import sortReducer from "./slice/sort-slice.ts";
+import paginationReducer from "./slice/pagination-slice.ts";
+import categoryReducer from "./slice/category-slice.ts";
+import cartReducer from "./slice/cart-slice.ts";
+import pizzaReducer from "./slice/pizza-slice.ts";
 
 export const store = configureStore({
   reducer: {
     sort: sortReducer,
     pagination: paginationReducer,
     category: categoryReducer,
-    cart: cartReducer
-  }
+    cart: cartReducer,
+    pizza: pizzaReducer,
+  },
 });
 
-export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;

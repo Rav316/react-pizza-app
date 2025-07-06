@@ -6,11 +6,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store.ts";
 
 export const Header: React.FC = () => {
-  const {items, totalPrice} = useSelector((state: RootState) => state.cart)
+  const { items, totalPrice } = useSelector((state: RootState) => state.cart);
   return (
     <div className="header">
       <div className="container">
-        <HeaderLogo/>
+        <HeaderLogo />
         <Search />
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">

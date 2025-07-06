@@ -7,9 +7,9 @@ interface SortSlice {
 }
 
 const initialState: SortSlice = {
-  selectedSort: 'popularity',
-  selectedOrder: 'desc'
-}
+  selectedSort: "popularity",
+  selectedOrder: "desc",
+};
 
 const filterSlice = createSlice({
   name: "filter",
@@ -20,7 +20,7 @@ const filterSlice = createSlice({
     },
     setOrder: (state, action: PayloadAction<OrderType>) => {
       state.selectedOrder = action.payload;
-    }
+    },
   },
 });
 

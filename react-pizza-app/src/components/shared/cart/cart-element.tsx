@@ -1,14 +1,19 @@
 import * as React from "react";
 import { CartItem } from "../../../service/model.ts";
 import { useDispatch } from "react-redux";
-import { addItem, decrementItem, removeItem } from "../../../redux/slice/cart-slice.ts";
+import {
+  addItem,
+  decrementItem,
+  removeItem,
+} from "../../../redux/slice/cart-slice.ts";
+import { AppDispatch } from "../../../redux/store.ts";
 
 interface Props {
   item: CartItem;
 }
 
 export const CartElement: React.FC<Props> = ({ item }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <div className="cart__item">
       <div className="cart__item-img">
@@ -68,7 +73,10 @@ export const CartElement: React.FC<Props> = ({ item }) => {
       <div className="cart__item-price">
         <b>{item.price * item.count} ₽</b>
       </div>
-      <div className="cart__item-remove" onClick={() => dispatch(removeItem(item.itemId))}>
+      <div
+        className="cart__item-remove"
+        onClick={() => dispatch(removeItem(item.itemId))}
+      >
         <div className="button button--outline button--circle">
           <svg
             width="10"
