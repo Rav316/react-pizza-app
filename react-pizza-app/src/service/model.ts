@@ -1,12 +1,19 @@
 export interface Pizza {
   id: number;
   title: string;
-  price: number;
   imageUrl: string;
-  types: PizzaType[];
-  sizes: PizzaSize[];
+  items: PizzaItem[];
   category: PizzaCategory;
   rating: number;
+  minPrice: number;
+}
+
+interface PizzaItem {
+  id: number;
+  pizzaId: number;
+  type: PizzaType;
+  size: PizzaSize;
+  price: number;
 }
 
 export interface PageResponse<T> {
@@ -33,4 +40,15 @@ export interface PizzaCategory {
 export interface PizzaType {
   id: number;
   title: string;
+}
+
+export interface CartItem {
+  pizzaId: number;
+  title: string;
+  itemId: number;
+  imageUrl: string;
+  type: PizzaType;
+  size: PizzaSize;
+  price: number;
+  count: number;
 }

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PizzaCategory } from "../../service/model.ts";
 
 interface CategorySlice {
@@ -17,14 +17,14 @@ const categorySlice = createSlice({
   name: 'category',
   initialState,
   reducers: {
-    loadCategories: (state, action) => {
+    loadCategories: (state, action: PayloadAction<PizzaCategory[]>) => {
       state.categories = [
         {id: 0, title: 'Все'},
         ...action.payload
       ]
       state.loading = false;
     },
-    setCategory: (state, action) => {
+    setCategory: (state, action: PayloadAction<number>) => {
       state.selectedCategory = action.payload;
     },
   }

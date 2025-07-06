@@ -10,18 +10,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import ru.alex.database.entity.Pizza;
+import ru.alex.database.entity.PizzaItem;
 import ru.alex.database.entity.QCategory;
 import ru.alex.database.entity.QPizza;
 import ru.alex.database.entity.QPizzaItem;
-import ru.alex.database.entity.QPizzaSize;
-import ru.alex.database.entity.QPizzaType;
 import ru.alex.database.repository.PizzaRepositoryCustom;
-import ru.alex.dto.category.CategoryReadDto;
 import ru.alex.dto.filter.PizzaFilter;
 import ru.alex.dto.pizza.PizzaListDto;
-import ru.alex.dto.pizzaSize.PizzaSizeReadDto;
-import ru.alex.dto.pizzaType.PizzaTypeReadDto;
+import ru.alex.mapper.pizza.PizzaListMapper;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
     private final JPAQueryFactory queryFactory;
+    private final PizzaListMapper pizzaListMapper;
 
     @Override
     public Page<PizzaListDto> findAllListItems(PizzaFilter filter, Pageable pageable) {
@@ -39,30 +39,44 @@ public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
         QCategory category = QCategory.category;
         QPizzaItem pizzaItem = QPizzaItem.pizzaItem;
 
-        List<Tuple> tuples = queryFactory
+        List<Tuple> result = queryFactory
                 .select(
-                        pizza.id,
-                        pizza.title,
-                        pizza.imageUrl,
-                        pizza.rating,
-                        category.id,
-                        category.title,
+                        pizza,
                         pizzaItem.price.min()
                 )
                 .from(pizza)
-                .join(pizza.category, category)
+                .leftJoin(pizza.category).fetchJoin()
                 .leftJoin(pizzaItem).on(pizzaItem.pizza.eq(pizza))
-                .groupBy(pizza.id, category.id, pizza.title, pizza.imageUrl, pizza.rating, category.title)
                 .where(buildPredicate(filter))
+                .groupBy(pizza.id, pizza.category)
                 .orderBy(getSortOrder(filter))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        List<Integer> pizzaIds = tuples.stream().map(t -> t.get(pizza.id)).toList();
+        List<Pizza> pizzas = result.stream()
+                .map(t -> t.get(pizza))
+                .toList();
 
-        Map<Integer, List<PizzaTypeReadDto>> pizzaTypes = fetchPizzaTypes(pizzaIds);
-        Map<Integer, List<PizzaSizeReadDto>> pizzaSizes = fetchPizzaSizes(pizzaIds);
+        List<PizzaItem> pizzaItems = queryFactory
+                .selectFrom(pizzaItem)
+                .leftJoin(pizzaItem.size).fetchJoin()
+                .leftJoin(pizzaItem.type).fetchJoin()
+                .where(pizzaItem.pizza.in(pizzas))
+                .orderBy(pizzaItem.type.title.asc())
+                .orderBy(pizzaItem.size.value.asc())
+                .fetch();
+
+        Map<Integer, List<PizzaItem>> itemsGrouped = pizzaItems.stream()
+                .collect(Collectors.groupingBy(item -> item.getPizza().getId()));
+
+        List<PizzaListDto> pizzaList = result.stream()
+                .map(tuple -> {
+                    Pizza p = tuple.get(pizza);
+                    Objects.requireNonNull(p).setPizzaItems(itemsGrouped.getOrDefault(p.getId(), Collections.emptyList()));
+                    BigDecimal price = tuple.get(pizzaItem.price.min());
+                    return pizzaListMapper.map(p, price);
+                }).toList();
 
         Long total = queryFactory
                 .select(pizza.count())
@@ -71,20 +85,8 @@ public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
                 .where(buildPredicate(filter))
                 .fetchOne();
 
-        List<PizzaListDto> pizzas = tuples.stream().map(t -> {
-            int id = Objects.requireNonNull(t.get(pizza.id));
-            return new PizzaListDto(
-                    id,
-                    t.get(pizza.title),
-                    t.get(pizzaItem.price.min()),
-                    t.get(pizza.imageUrl),
-                    pizzaTypes.getOrDefault(id, Collections.emptyList()),
-                    pizzaSizes.getOrDefault(id, Collections.emptyList()),
-                    new CategoryReadDto(t.get(category.id), t.get(category.title)),
-                    t.get(pizza.rating)
-            );
-        }).toList();
-        return new PageImpl<>(pizzas, pageable, Objects.requireNonNull(total));
+
+        return new PageImpl<>(pizzaList, pageable, Objects.requireNonNull(total));
     }
 
     private BooleanExpression buildPredicate(PizzaFilter filter) {
@@ -124,48 +126,4 @@ public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
                 desc ? pizza.id.desc() : pizza.id.asc()
         };
     }
-
-
-    private Map<Integer, List<PizzaTypeReadDto>> fetchPizzaTypes(List<Integer> pizzaIds) {
-        QPizzaItem pizzaItem = QPizzaItem.pizzaItem;
-        QPizzaType pizzaType = QPizzaType.pizzaType;
-
-        return queryFactory
-                .select(pizzaItem.pizza.id, pizzaType.id, pizzaType.title)
-                .from(pizzaItem)
-                .join(pizzaItem.type, pizzaType)
-                .where(pizzaItem.pizza.id.in(pizzaIds))
-                .distinct()
-                .fetch()
-                .stream()
-                .collect(Collectors.groupingBy(
-                        tuple -> Objects.requireNonNull(tuple.get(pizzaItem.pizza.id)),
-                        Collectors.mapping(tuple -> new PizzaTypeReadDto(
-                                tuple.get(pizzaType.id),
-                                tuple.get(pizzaType.title)
-                        ), Collectors.toList())
-                ));
-    }
-
-    private Map<Integer, List<PizzaSizeReadDto>> fetchPizzaSizes(List<Integer> pizzaIds) {
-        QPizzaItem pizzaItem = QPizzaItem.pizzaItem;
-        QPizzaSize pizzaSize = QPizzaSize.pizzaSize;
-
-        return queryFactory
-                .select(pizzaItem.pizza.id, pizzaSize.id, pizzaSize.value)
-                .from(pizzaItem)
-                .join(pizzaItem.size, pizzaSize)
-                .where(pizzaItem.pizza.id.in(pizzaIds))
-                .distinct()
-                .fetch()
-                .stream()
-                .collect(Collectors.groupingBy(
-                        tuple -> Objects.requireNonNull(tuple.get(pizzaItem.pizza.id)),
-                        Collectors.mapping(tuple -> new PizzaSizeReadDto(
-                                tuple.get(pizzaSize.id),
-                                tuple.get(pizzaSize.value)
-                        ), Collectors.toList())
-                ));
-    }
-
 }

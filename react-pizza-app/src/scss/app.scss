@@ -342,13 +342,15 @@ body {
   }
 
   &--empty {
-    margin: 0 auto;
+    margin: 60px auto;
     width: 560px;
     text-align: center;
+    padding-top: 50px;
 
     h2 {
-      font-size: 32px;
-      margin-bottom: 10px;
+      font-size: 36px;
+      font-weight: 600;
+      margin-bottom: 15px;
     }
 
     p {
