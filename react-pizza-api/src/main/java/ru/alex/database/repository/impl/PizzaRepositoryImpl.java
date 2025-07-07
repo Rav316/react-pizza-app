@@ -21,6 +21,7 @@ import ru.alex.dto.pizza.PizzaListDto;
 import ru.alex.mapper.pizza.PizzaListMapper;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -112,18 +113,24 @@ public class PizzaRepositoryImpl implements PizzaRepositoryCustom {
         OrderSpecifier<?> primarySort;
 
         if (filter.sort() == null) {
-            primarySort = desc ? pizza.rating.desc() : pizza.rating.asc();
+            primarySort = null;
         } else {
             primarySort = switch (filter.sort()) {
                 case "price" -> desc ? pizzaItem.price.min().desc() : pizzaItem.price.min().asc();
                 case "alphabet" -> desc ? pizza.title.desc() : pizza.title.asc();
-                default -> desc ? pizza.rating.desc() : pizza.rating.asc();
+                case "popularity" -> desc ? pizza.rating.desc() : pizza.rating.asc();
+                default -> null;
             };
         }
 
-        return new OrderSpecifier<?>[] {
-                primarySort,
-                desc ? pizza.id.desc() : pizza.id.asc()
-        };
+
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+
+        if (primarySort != null) {
+            orderSpecifiers.add(primarySort);
+        }
+        orderSpecifiers.add(desc ? pizza.id.desc() : pizza.id.asc());
+
+        return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }
 }
