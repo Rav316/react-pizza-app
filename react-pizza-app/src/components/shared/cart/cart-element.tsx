@@ -12,7 +12,7 @@ interface Props {
   item: CartItem;
 }
 
-export const CartElement: React.FC<Props> = ({ item }) => {
+export const CartElement: React.FC<Props> = React.memo(({ item }) => {
   const dispatch = useDispatch<AppDispatch>();
   return (
     <div className="cart__item">
@@ -26,8 +26,9 @@ export const CartElement: React.FC<Props> = ({ item }) => {
         </p>
       </div>
       <div className="cart__item-count">
-        <div
-          className="button button--outline button--circle cart__item-count-minus"
+        <button
+          disabled={item.count === 1}
+          className={"button button--outline button--circle cart__item-count-minus"}
           onClick={() => dispatch(decrementItem(item.itemId))}
         >
           <svg
@@ -46,9 +47,9 @@ export const CartElement: React.FC<Props> = ({ item }) => {
               fill="#EB5A1E"
             />
           </svg>
-        </div>
+        </button>
         <b>{item.count}</b>
-        <div
+        <button
           className="button button--outline button--circle cart__item-count-plus"
           onClick={() => dispatch(addItem(item))}
         >
@@ -68,7 +69,7 @@ export const CartElement: React.FC<Props> = ({ item }) => {
               fill="#EB5A1E"
             />
           </svg>
-        </div>
+        </button>
       </div>
       <div className="cart__item-price">
         <b>{item.price * item.count} ₽</b>
@@ -98,4 +99,4 @@ export const CartElement: React.FC<Props> = ({ item }) => {
       </div>
     </div>
   );
-};
+});

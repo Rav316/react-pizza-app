@@ -41,13 +41,7 @@ const cartSlice = createSlice({
         (item) => item.itemId === action.payload,
       );
       if (findItem) {
-        if (findItem.count > 1) {
-          findItem.count--;
-        } else {
-          state.items = state.items.filter(
-            (item) => item.itemId !== action.payload,
-          );
-        }
+        findItem.count--;
       }
       state.totalPrice = calculateTotalPrice(state.items);
     },

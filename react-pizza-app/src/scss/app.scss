@@ -224,6 +224,15 @@ body {
             display: none;
           }
         }
+
+        &:disabled {
+          opacity: 0.4;
+          pointer-events: none;
+          border-color: #7b7b7b;
+          svg path {
+            fill: #7b7b7b;
+          }
+        }
       }
 
       b {

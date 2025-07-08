@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import * as React from "react";
 import { HeaderLogo } from "./header-logo.tsx";
 import { useSelector } from "react-redux";
@@ -7,11 +7,12 @@ import { Search } from "./search";
 
 export const Header: React.FC = () => {
   const { items, totalPrice } = useSelector((state: RootState) => state.cart);
+  const location = useLocation();
   return (
     <div className="header">
       <div className="container">
         <HeaderLogo />
-        <Search />
+        {location.pathname !== "/cart" && <Search />}
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
             <span>{totalPrice} ₽</span>

@@ -5,15 +5,16 @@ import { setCurrentPage } from "../../redux/slice/pagination-slice.ts";
 import logoSvg from "../../assets/img/pizza-logo.svg";
 import { AppDispatch } from "../../redux/store.ts";
 import { Link } from "react-router";
+import { useCallback } from "react";
 
 export const HeaderLogo = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     dispatch(setSort("popularity"));
     dispatch(setCategory(0));
     dispatch(setCurrentPage(0));
-  };
+  }, [dispatch])
 
   return (
     <Link to={'/'} onClick={handleReset}>

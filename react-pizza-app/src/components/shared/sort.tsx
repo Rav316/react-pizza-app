@@ -8,7 +8,7 @@ import { setOrder, setSort } from "../../redux/slice/sort-slice.ts";
 import { setCurrentPage } from "../../redux/slice/pagination-slice.ts";
 import { sortCategories } from "../../constants/sort.ts";
 
-export const Sort: React.FC = () => {
+export const Sort: React.FC = React.memo(() => {
   const [isVisible, setIsVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { selectedSort, selectedOrder } = useSelector(
@@ -71,4 +71,4 @@ export const Sort: React.FC = () => {
       )}
     </div>
   );
-};
+})
