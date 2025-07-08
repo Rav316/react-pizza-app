@@ -14,7 +14,7 @@ const initialState: CategorySlice = {
   loading: false,
 };
 
-export const fetchCategories = createAsyncThunk(
+export const fetchCategories = createAsyncThunk<PizzaCategory[], void>(
   "category/fetchCategoriesStatus",
   async () => {
     return await Api.categories.findAll();

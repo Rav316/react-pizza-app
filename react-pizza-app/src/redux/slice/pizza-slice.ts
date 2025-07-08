@@ -19,10 +19,10 @@ const initialState: PizzaSlice = {
     },
   },
   loading: true,
-  error: false
+  error: false,
 };
 
-export const fetchPizzas = createAsyncThunk(
+export const fetchPizzas = createAsyncThunk<PageResponse<Pizza>, SearchParams>(
   "pizza/fetchPizzasStatus",
   async (params: SearchParams) => {
     return await Api.pizzas.findAll(params);

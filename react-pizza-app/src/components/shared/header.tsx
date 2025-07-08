@@ -4,10 +4,20 @@ import { HeaderLogo } from "./header-logo.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store.ts";
 import { Search } from "./search";
+import { useEffect, useRef } from "react";
 
 export const Header: React.FC = () => {
   const { items, totalPrice } = useSelector((state: RootState) => state.cart);
   const location = useLocation();
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if(isMounted.current) {
+      const json = JSON.stringify(items);
+      localStorage.setItem("cart", json);
+    }
+    isMounted.current = true;
+  }, [items]);
   return (
     <div className="header">
       <div className="container">

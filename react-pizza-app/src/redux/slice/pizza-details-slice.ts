@@ -23,7 +23,7 @@ const initialState: PizzaDetailsSlice = {
   error: false,
 };
 
-export const fetchPizzaDetails = createAsyncThunk(
+export const fetchPizzaDetails = createAsyncThunk<PizzaDetails, number>(
   "pizzaDetails/fetchPizzaDetailsStatus",
   async (id: number) => {
     return await Api.pizzas.findById(id);
