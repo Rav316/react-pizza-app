@@ -10,6 +10,7 @@ public record PizzaReadDto(
         Integer id,
         String title,
         String imageUrl,
+        String description,
         List<PizzaItemReadDto> items,
         CategoryReadDto category,
         Integer rating,

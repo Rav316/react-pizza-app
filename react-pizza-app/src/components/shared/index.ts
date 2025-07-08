@@ -1,4 +1,11 @@
 export { Header } from "./header";
-export { Categories } from "./categories/categories.tsx";
+export {HeaderLogo} from "./header-logo";
+export {Layout} from "./layout";
 export { Sort } from "./sort";
-export { PizzaSkeleton } from "./pizza-block/pizza-skeleton.tsx";
+
+export * from './cart';
+export * from './categories';
+export * from './not-found-block';
+export * from './pagination';
+export * from './pizza-block';
+export * from './search';

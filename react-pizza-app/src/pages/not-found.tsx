@@ -1,4 +1,4 @@
-import { NotFoundBlock } from "../components/shared/not-found-block";
+import { NotFoundBlock } from "../components/shared";
 
 export const NotFound = () => {
   return <NotFoundBlock />;

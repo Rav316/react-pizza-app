@@ -44,12 +44,12 @@
         @include noselect();
         border-radius: 5px;
         transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        text-align: center;
 
         &.active {
           background: #ffffff;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
           cursor: auto;
-          transform: scale(1.05);
         }
       }
     }

@@ -1,4 +1,5 @@
 import styles from "./not-found-block.module.scss";
+import { Link } from "react-router";
 
 export const NotFoundBlock = () => {
   return (
@@ -11,6 +12,9 @@ export const NotFoundBlock = () => {
       <p className={"description"}>
         К сожалению данная страница отсутствует в нашем интернет-магазине
       </p>
+      <Link to={'/'}>
+        <button>Вернуться на главную</button>
+      </Link>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import searchIcon from "../../../assets/img/search.svg";
 import clearIcon from "../../../assets/img/clear.svg";
 import * as React from "react";
 import { useContext, useRef } from "react";
-import { SearchContext } from "../../../context/search-context.tsx";
+import { SearchContext } from "../../../context";
 
 export const Search: React.FC = () => {
   const { searchValue, setSearchValue } = useContext(SearchContext);

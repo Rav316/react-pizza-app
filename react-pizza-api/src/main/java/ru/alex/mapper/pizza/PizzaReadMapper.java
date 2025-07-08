@@ -36,6 +36,7 @@ public class PizzaReadMapper implements Mapper<Pizza, PizzaReadDto> {
                 entity.getId(),
                 entity.getTitle(),
                 entity.getImageUrl(),
+                entity.getDescription(),
                 items,
                 categoryReadMapper.map(entity.getCategory()),
                 entity.getRating(),

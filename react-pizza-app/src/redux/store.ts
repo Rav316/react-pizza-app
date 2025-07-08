@@ -5,6 +5,7 @@ import paginationReducer from "./slice/pagination-slice.ts";
 import categoryReducer from "./slice/category-slice.ts";
 import cartReducer from "./slice/cart-slice.ts";
 import pizzaReducer from "./slice/pizza-slice.ts";
+import pizzaDetailsReducer from "./slice/pizza-details-slice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     category: categoryReducer,
     cart: cartReducer,
     pizza: pizzaReducer,
+    pizzaDetails: pizzaDetailsReducer
   },
 });
 

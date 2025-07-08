@@ -1,11 +1,7 @@
-import { Categories, PizzaSkeleton, Sort } from "../components/shared";
-import { PizzaBlock } from "../components/shared/pizza-block/pizza-block.tsx";
+import { Categories, CategoriesSkeleton, Pagination, PizzaBlock, PizzaSkeleton, Sort } from "../components/shared";
 import { useContext, useEffect, useRef } from "react";
 import * as React from "react";
-import { Pagination } from "../components/shared/pagination/pagination.tsx";
-import { CategoriesSkeleton } from "../components/shared/categories/categories-skeleton.tsx";
 import { useDebounce } from "use-debounce";
-import { SearchContext } from "../context/search-context.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store.ts";
 import qs from "qs";
@@ -15,6 +11,7 @@ import { fetchCategories, setCategory } from "../redux/slice/category-slice.ts";
 import { setCurrentPage } from "../redux/slice/pagination-slice.ts";
 import { sortCategories } from "../constants/sort.ts";
 import { fetchPizzas } from "../redux/slice/pizza-slice.ts";
+import { SearchContext } from "../context";
 
 export const Home: React.FC = () => {
   const { searchValue } = useContext(SearchContext);
@@ -84,7 +81,6 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     if (categories.length === 0) return;
-
     dispatch(
       fetchPizzas({
         category:
@@ -93,8 +89,7 @@ export const Home: React.FC = () => {
             : categories.find((c) => c.id === selectedCategory)?.title,
         sort: selectedSort,
         order: selectedOrder,
-        search: searchValue,
-        query: debouncedSearch,
+        search: debouncedSearch,
         page: currentPage,
         size: pageSize,
       }),
@@ -106,7 +101,6 @@ export const Home: React.FC = () => {
     currentPage,
     selectedSort,
     selectedOrder,
-    searchValue,
     dispatch,
   ]);
 
@@ -129,7 +123,6 @@ export const Home: React.FC = () => {
     navigate,
     selectedCategory,
   ]);
-
   return (
     <div className="container">
       <div className="content__top">
@@ -151,7 +144,7 @@ export const Home: React.FC = () => {
                   .fill(0)
                   .map((_, index) => <PizzaSkeleton key={index} />)
               : items.content.map((pizza) => (
-                  <PizzaBlock key={pizza.id} pizza={pizza} />
+                <PizzaBlock key={pizza.id} pizza={pizza} />
                 ))}
           </div>
           {!loadingPizza && (

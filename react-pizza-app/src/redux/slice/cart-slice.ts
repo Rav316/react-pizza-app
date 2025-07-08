@@ -28,13 +28,13 @@ const cartSlice = createSlice({
       } else {
         state.items.push(action.payload);
       }
-      calculateTotalPrice(state.items);
+      state.totalPrice = calculateTotalPrice(state.items);
     },
     removeItem: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(
         (item) => item.itemId !== action.payload,
       );
-      calculateTotalPrice(state.items);
+      state.totalPrice = calculateTotalPrice(state.items);
     },
     decrementItem: (state, action: PayloadAction<number>) => {
       const findItem = state.items.find(
@@ -49,7 +49,7 @@ const cartSlice = createSlice({
           );
         }
       }
-      calculateTotalPrice(state.items);
+      state.totalPrice = calculateTotalPrice(state.items);
     },
     clearCart: (state) => {
       state.items = [];

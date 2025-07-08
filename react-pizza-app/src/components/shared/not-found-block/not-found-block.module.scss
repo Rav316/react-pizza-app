@@ -4,6 +4,26 @@
   span {
     font-size: 78px;
   }
+
+  button {
+    color: white;
+    display: inline-block;
+    background-color: #232323;
+    border-radius: 30px;
+    padding: 10px 20px;
+    min-width: 100px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    border: 1px solid transparent;
+    margin-top: 50px;
+    &:hover {
+      background-color: darken(#232323, 8%);
+    }
+    &:active {
+      background-color: darken(#232323, 12%);
+    }
+  }
 }
 
 .description {

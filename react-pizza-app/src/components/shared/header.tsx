@@ -1,9 +1,9 @@
 import { Link } from "react-router";
-import { Search } from "./search/search.tsx";
 import * as React from "react";
 import { HeaderLogo } from "./header-logo.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store.ts";
+import { Search } from "./search";
 
 export const Header: React.FC = () => {
   const { items, totalPrice } = useSelector((state: RootState) => state.cart);

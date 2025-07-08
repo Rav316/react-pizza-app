@@ -8,7 +8,18 @@ export interface Pizza {
   minPrice: number;
 }
 
-interface PizzaItem {
+export interface PizzaDetails {
+  id: number;
+  title: string;
+  imageUrl: string;
+  description: string;
+  items: PizzaItem[];
+  category: PizzaCategory;
+  rating: number;
+  ingredients: Ingredient[];
+}
+
+export interface PizzaItem {
   id: number;
   pizzaId: number;
   type: PizzaType;
@@ -38,6 +49,11 @@ export interface PizzaCategory {
 }
 
 export interface PizzaType {
+  id: number;
+  title: string;
+}
+
+interface Ingredient {
   id: number;
   title: string;
 }

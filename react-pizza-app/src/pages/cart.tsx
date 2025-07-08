@@ -1,9 +1,8 @@
 import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store.ts";
-import { CartElement } from "../components/shared/cart/cart-element.tsx";
-import { CartEmpty } from "../components/shared/cart/cart-empty.tsx";
 import { clearCart } from "../redux/slice/cart-slice.ts";
+import { CartElement, CartEmpty } from "../components/shared";
 
 export const Cart = () => {
   const dispatch = useDispatch<AppDispatch>();

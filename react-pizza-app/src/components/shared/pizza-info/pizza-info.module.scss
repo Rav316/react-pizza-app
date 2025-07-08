@@ -1,0 +1,57 @@
+.root {
+  margin-top: 30px;
+  display: flex;
+
+  .imgWrapper {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  img {
+    width: 50%;
+  }
+
+  .pizzaInfo {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h3 {
+    font-size: 40px;
+    line-height: 0.8;
+  }
+
+  h4 {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 15px;
+    font-weight: 350;
+  }
+
+  .pizzaTypeSize {
+    font-size: 15px;
+    color: #7b7b7b;
+  }
+
+  p {
+    font-size: 20px;
+    width: 80%;
+    margin-bottom: 15px;
+    line-height: 1;
+  }
+
+  .selectorWrapper {
+    width: 60%;
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+
+  .addButtonWrapper {
+    width: 160px;
+  }
+}
