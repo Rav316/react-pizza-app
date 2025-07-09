@@ -5,10 +5,10 @@
     <img src="readme/project-logo.svg" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">Fullstack app with the best pizza in the world</h3>
+<h3 align="center">React Pizza</h3>
 
   <p align="center">
-    <strong>See documentation is Swagger UI</strong>
+    <strong>Fullstack app with the best pizza in the world</strong>
     </p>
 </div>
 
@@ -82,7 +82,7 @@ Here's why:
 
 ### Prerequisites
 
-Before running the project, you need to install and run docker and docker-compose ([see more details here](https://docs.docker.com/engine/install/))
+Before running the project, you need to install and run docker and docker-compose _([see more details here](https://docs.docker.com/engine/install/))_
 
 ### Installation
 
@@ -95,11 +95,15 @@ Before running the project, you need to install and run docker and docker-compos
     docker-compose up
 ```
 
+### Documentation
+
+See documentation in _[Swagger-UI](http://localhost:8080/swagger-ui/index.html)_ when project is running. ()
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Top contributors:
 
-Special thanks to the author [Archakov Blog](https://github.com/Archakov06) for the YouTube course on this project
+Special thanks to the author _[Archakov Blog](https://github.com/Archakov06)_ for the YouTube course on this project
 <br>
 <br>
 <br>
