@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { setSort } from "../../redux/slice/sort-slice.ts";
 import { setCategory } from "../../redux/slice/category-slice.ts";
 import { setCurrentPage } from "../../redux/slice/pagination-slice.ts";
-import logoSvg from "../../assets/img/pizza-logo.svg";
+import logoSvg from "../../../public/pizza-logo.svg";
 import { AppDispatch } from "../../redux/store.ts";
 import { Link } from "react-router";
 import { useCallback } from "react";

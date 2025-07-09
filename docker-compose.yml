@@ -1,0 +1,36 @@
+services:
+  react-pizza-db:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB_NAME}
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - react_pizza_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+  react-pizza-api:
+    build:
+      context: ./react-pizza-api
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - react-pizza-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://react-pizza-db:5432/${POSTGRES_DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+  react-pizza-app:
+    build:
+      context: ./react-pizza-app
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - node_modules:/app/node-modules
+    depends_on:
+      - react-pizza-api
+volumes:
+  react_pizza_data:
+  node_modules:
