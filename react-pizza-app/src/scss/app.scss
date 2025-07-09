@@ -8,7 +8,7 @@ body {
 }
 
 .wrapper {
-  width: calc(100vw - 100px);
+  width: calc(100% - 100px);
   height: 100%;
   background-color: #fff;
   margin: 50px auto;
@@ -16,7 +16,7 @@ body {
   max-width: 1400px;
 
   @media (max-width: 650px) {
-    width: calc(100vw - 30px);
+    width: calc(100% - 30px);
     margin-top: 15px;
   }
 }
@@ -158,6 +158,12 @@ body {
       transition: all $duration ease-in-out;
     }
 
+    @media (max-width: 645px) {
+      span {
+        display: none;
+      }
+    }
+
     &:hover {
       svg {
         path {
@@ -181,6 +187,36 @@ body {
     padding-top: 30px;
     margin-top: 30px;
 
+    @media (max-width: 777px) {
+      margin-top: 20px;
+    }
+
+    &__wrapper {
+      display: flex;
+      width: 100%;
+
+      @media (max-width: 777px) {
+        flex-direction: column;
+      }
+
+      &_img-info {
+        display: flex;
+        width: 100%;
+        column-gap: 20px;
+      }
+
+      &_count-price {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+
+        @media (max-width: 777px) {
+          margin-top: 20px;
+          justify-content: left;
+        }
+      }
+    }
+
     &-img {
       display: flex;
       align-items: center;
@@ -197,7 +233,9 @@ body {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      width: 40%;
+      //width: 40%;
+      margin-left: 25px;
+      margin-right: 25px;
 
       h3 {
         font-weight: bold;
@@ -216,7 +254,7 @@ body {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 13%;
+      width: 120px;
 
       &-minus {
         svg {
@@ -293,6 +331,11 @@ body {
       display: flex;
       justify-content: space-between;
 
+      @media (max-width: 510px) {
+        flex-direction: column;
+        row-gap: 5px;
+      }
+
       span {
         font-size: 22px;
 
@@ -346,6 +389,15 @@ body {
         font-weight: 600;
         width: 210px;
         padding: 16px;
+      }
+
+      @media (max-width: 510px) {
+        flex-direction: column;
+        row-gap: 15px;
+
+        .go-back-btn, .pay-btn {
+          width: 100%;
+        }
       }
     }
   }

@@ -27,5 +27,11 @@
     p {
       color: #7b7b7b;
     }
+
+    &-info {
+      @media (min-width: 646px) and (max-width: 1200px) {
+        display: none;
+      }
+    }
   }
 }
