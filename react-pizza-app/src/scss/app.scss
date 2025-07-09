@@ -404,7 +404,6 @@ body {
 
   &--empty {
     margin: 60px auto;
-    width: 560px;
     text-align: center;
     padding-top: 50px;
 
@@ -412,6 +411,8 @@ body {
       font-size: 36px;
       font-weight: 600;
       margin-bottom: 15px;
+      padding-left: 15px;
+      padding-right: 15px;
     }
 
     p {
@@ -419,6 +420,8 @@ body {
       line-height: 145.4%;
       letter-spacing: 0.01em;
       color: #777777;
+      padding-left: 15px;
+      padding-right: 15px;
     }
 
     icon {
