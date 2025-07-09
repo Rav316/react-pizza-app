@@ -7,7 +7,7 @@ import { fetchPizzaDetails } from "../redux/slice/pizza-details-slice.ts";
 import { PizzaInfoSkeleton } from "../components/shared/pizza-info/pizza-info-skeleton.tsx";
 import { NotFoundBlock } from "../components/shared";
 
-export const FullPizza = () => {
+const FullPizza = () => {
   const {id: idStr} = useParams<{ id: string }>();
   const id = Number(idStr);
   const dispatch = useDispatch<AppDispatch>();
@@ -29,4 +29,6 @@ export const FullPizza = () => {
       }
     </>
   );
-}
+};
+
+export default FullPizza;

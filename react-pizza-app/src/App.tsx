@@ -4,8 +4,13 @@ import { Route, Routes } from "react-router";
 import { useState } from "react";
 import { SearchContext } from "./context";
 import { Layout } from "./components/shared";
-import { Cart, FullPizza, Home, NotFound } from "./pages";
 import { MainLayout } from "./layouts";
+import * as React from "react";
+import Home from "./pages/home.tsx";
+import NotFound from "./pages/not-found.tsx";
+
+const Cart = React.lazy(() => import("./pages/cart"));
+const FullPizza = React.lazy(() => import("./pages/full-pizza"));
 
 const App = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -18,7 +23,7 @@ const App = () => {
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path={'/pizza/:id'} element={<FullPizza/>} />
+              <Route path={"/pizza/:id"} element={<FullPizza />} />
               <Route path={"*"} element={<NotFound />} />
             </Route>
           </Routes>

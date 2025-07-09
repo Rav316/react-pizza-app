@@ -13,7 +13,7 @@ import { sortCategories } from "../constants/sort.ts";
 import { fetchPizzas } from "../redux/slice/pizza-slice.ts";
 import { SearchContext } from "../context";
 
-export const Home: React.FC = () => {
+const Home: React.FC = () => {
   const { searchValue } = useContext(SearchContext);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -155,3 +155,5 @@ export const Home: React.FC = () => {
     </div>
   );
 };
+
+export default Home;

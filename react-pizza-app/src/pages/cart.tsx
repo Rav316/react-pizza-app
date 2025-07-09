@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../redux/store.ts";
 import { clearCart } from "../redux/slice/cart-slice.ts";
 import { CartElement, CartEmpty } from "../components/shared";
 
-export const Cart = () => {
+const Cart = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { items: cartItems, totalPrice } = useSelector(
     (state: RootState) => state.cart,
@@ -139,3 +139,5 @@ export const Cart = () => {
     </div>
   );
 };
+
+export default Cart;
