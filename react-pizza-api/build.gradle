@@ -28,14 +28,17 @@ repositories {
     mavenCentral()
 }
 
+apply from: 'version.gradle'
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.liquibase:liquibase-core'
-    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
-    implementation 'com.querydsl:querydsl-core:5.1.0'
-    implementation 'org.hibernate.orm:hibernate-core:7.0.3.Final'
-    implementation 'jakarta.persistence:jakarta.persistence-api:3.2.0'
+    implementation "com.querydsl:querydsl-jpa:${versions.querydsl}:jakarta"
+    implementation "com.querydsl:querydsl-core:${versions.querydsl}"
+    implementation "org.hibernate.orm:hibernate-core:${versions.hibernate}"
+    implementation "jakarta.persistence:jakarta.persistence-api:${versions.jakarta}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions.openapi}"
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
@@ -45,7 +48,7 @@ dependencies {
 
 querydsl {
     jpa = true
-    library = "com.querydsl:querydsl-apt:5.1.0:jakarta"
+    library = "com.querydsl:querydsl-apt:${versions.querydsl}:jakarta"
     querydslSourcesDir = layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main").get().asFile
 }
 
