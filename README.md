@@ -97,7 +97,7 @@ Before running the project, you need to install and run docker and docker-compos
 
 ### Documentation
 
-See documentation in _[Swagger-UI](http://localhost:8080/swagger-ui/index.html)_ when project is running. ()
+See documentation in _[Swagger-UI](http://localhost:8080/swagger-ui/index.html)_ when project is running.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
